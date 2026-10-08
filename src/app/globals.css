@@ -1,0 +1,243 @@
+/* ── Google Fonts — must be first, before any other rules ── */
+@import url("https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap");
+
+@import "tailwindcss";
+
+/* ═══════════════════════════════════════════════════════════
+   GLOBALS.CSS — Portfolio Design System (Tailwind v4)
+   Dark-first | Zinc/Slate palette | Emerald + Blue accents
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tailwind v4 Theme Definition ─────────────────────────── */
+@theme {
+  /* Font families */
+  --font-display: "Syne", system-ui, sans-serif;
+  --font-body: "Inter", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  /* ─── Color Palette ──────────────────────────────────────── */
+
+  /* Surface layers */
+  --color-surface-base:    #09090b;
+  --color-surface-raised:  #18181b;
+  --color-surface-overlay: #27272a;
+  --color-surface-border:  #3f3f46;
+
+  /* Text hierarchy */
+  --color-text-primary:   #fafafa;
+  --color-text-secondary: #a1a1aa;
+  --color-text-muted:     #52525b;
+
+  /* Accent — Emerald (Odoo/technical identity) */
+  --color-accent:         #10b981;
+  --color-accent-light:   #34d399;
+  --color-accent-dark:    #059669;
+  --color-accent-muted:   #064e3b;
+
+  /* Highlight — Blue (system architect identity) */
+  --color-highlight:       #3b82f6;
+  --color-highlight-light: #60a5fa;
+  --color-highlight-dark:  #2563eb;
+  --color-highlight-muted: #1e3a5f;
+
+  /* ─── Spacing ───────────────────────────────────────────── */
+  --width-container: 1280px;
+
+  /* ─── Border Radius ─────────────────────────────────────── */
+  --radius-4xl: 2rem;
+  --radius-5xl: 2.5rem;
+
+  /* ─── Box Shadows ───────────────────────────────────────── */
+  --shadow-glow:      0 0 20px -4px rgba(16, 185, 129, 0.35);
+  --shadow-glow-blue: 0 0 20px -4px rgba(59, 130, 246, 0.35);
+  --shadow-glow-lg:   0 0 40px -8px rgba(16, 185, 129, 0.4);
+  --shadow-card:      0 4px 24px -4px rgba(0,0,0,0.5);
+  --shadow-card-hover:0 8px 40px -8px rgba(0,0,0,0.6);
+
+  /* ─── Animations ────────────────────────────────────────── */
+  --animate-gradient-shift: gradient-shift 8s ease infinite;
+  --animate-fade-up:        fade-up 0.5s ease-out forwards;
+  --animate-fade-in:        fade-in 0.4s ease-out forwards;
+  --animate-pulse-glow:     pulse-glow 2.5s ease-in-out infinite;
+  --animate-scan-line:      scan-line 3s linear infinite;
+  --animate-blink:          blink 1s step-start infinite;
+}
+
+/* ── Keyframes ────────────────────────────────────────────── */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+
+@keyframes fade-up {
+  0%   { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  0%   { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { box-shadow: 0 0 12px 0px rgba(16, 185, 129, 0.2); }
+  50%       { box-shadow: 0 0 24px 4px rgba(16, 185, 129, 0.45); }
+}
+
+@keyframes scan-line {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(100vw); }
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0; }
+}
+
+/* ── CSS Custom Properties (non-theme) ────────────────────── */
+:root {
+  scroll-behavior: smooth;
+  color-scheme: dark;
+}
+
+/* ── Hard Reset & Box Model ───────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+/* ── Base HTML / Body ─────────────────────────────────────── */
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  tab-size: 4;
+}
+
+body {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  line-height: 1.6;
+  background-color: var(--color-surface-base);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100dvh;
+  overflow-x: hidden;
+
+  /* Ambient dot-grid background */
+  background-image:
+    linear-gradient(rgba(63, 63, 70, 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(63, 63, 70, 0.15) 1px, transparent 1px);
+  background-size: 64px 64px;
+  background-position: center center;
+}
+
+/* ── Selection Colors ─────────────────────────────────────── */
+::selection {
+  background-color: rgba(16, 185, 129, 0.35);
+  color: #fafafa;
+}
+
+::-moz-selection {
+  background-color: rgba(16, 185, 129, 0.35);
+  color: #fafafa;
+}
+
+/* ── Scrollbar ────────────────────────────────────────────── */
+::-webkit-scrollbar       { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--color-surface-raised); }
+::-webkit-scrollbar-thumb {
+  background: var(--color-surface-border);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { background: var(--color-accent); }
+
+/* ── Typography Base ──────────────────────────────────────── */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--color-text-primary);
+}
+
+p, li, span, blockquote { font-family: var(--font-body); }
+code, pre, kbd, samp     { font-family: var(--font-mono); }
+
+/* ── Link Reset ───────────────────────────────────────────── */
+a { color: inherit; text-decoration: none; }
+
+/* ── Media Reset ──────────────────────────────────────────── */
+img, video, canvas, audio, iframe, embed, object {
+  display: block;
+  max-width: 100%;
+}
+
+/* ── Focus Ring ───────────────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ── Reduced Motion ───────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   DESIGN SYSTEM UTILITIES
+   ════════════════════════════════════════════════════════════ */
+
+/* Glassmorphism */
+.glass {
+  background: rgba(24, 24, 27, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(63, 63, 70, 0.5);
+}
+
+/* Accent gradient text (emerald → blue) */
+.gradient-text {
+  background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Glow border on hover */
+.glow-border { position: relative; }
+.glow-border::after {
+  content: "";
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(16,185,129,0.4), rgba(59,130,246,0.4));
+  z-index: -1;
+  filter: blur(4px);
+  opacity: 0;
+  transition: opacity 0.25s ease;
+}
+.glow-border:hover::after { opacity: 1; }
+
+/* Bento card base */
+.bento-card {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-surface-border);
+  border-radius: 1.25rem;
+  padding: 1.5rem;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+}
+.bento-card:hover {
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+}
