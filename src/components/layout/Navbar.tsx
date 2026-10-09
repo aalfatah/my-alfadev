@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "motion/react";
-import { Menu, X, Terminal } from "lucide-react";
+import { Menu, X, Terminal, Download } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // ─── Navigation Items ───────────────────────────────────────────────────────
@@ -12,42 +11,61 @@ import { cn } from "@/lib/utils";
 interface NavItem {
   label: string;
   href: string;
+  id: string;
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Home", href: "/" },
-  { label: "About", href: "/#about" },
-  { label: "Skills", href: "/#skills" },
-  { label: "Portfolio", href: "/#portfolio" },
-  { label: "Contact", href: "/#contact" },
+  { label: "Home", href: "/", id: "hero" },
+  { label: "Tech Stack", href: "/#tech-stack", id: "tech-stack" },
+  { label: "About", href: "/#about", id: "about" },
+  { label: "Skills", href: "/#skills", id: "skills" },
+  { label: "Portfolio", href: "/#portfolio", id: "portfolio" },
+  { label: "Contact", href: "/#contact", id: "contact" },
 ];
 
-// ─── Navbar Component ───────────────────────────────────────────────────────
-
-/**
- * Navbar — Client Component.
- * Features:
- * - Glassmorphism background that activates on scroll
- * - Framer Motion animated active state indicator
- * - Mobile menu with AnimatePresence slide-in
- * - Logo with accent pulse animation
- */
 export default function Navbar() {
-  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState("hero");
 
-  // Track scroll position to activate glass effect
+  // Track scroll position to update header styling & active section
   useEffect(() => {
-    const handleScroll = () => setScrolled(window.scrollY > 20);
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+
+      // Section spy
+      const sections = NAV_ITEMS.map((item) => document.getElementById(item.id));
+      const scrollPos = window.scrollY + 140;
+
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const sec = sections[i];
+        if (sec && sec.offsetTop <= scrollPos) {
+          setActiveSection(NAV_ITEMS[i].id);
+          break;
+        }
+      }
+    };
+
     window.addEventListener("scroll", handleScroll, { passive: true });
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
+  // Prevent background scroll when mobile menu is open
   useEffect(() => {
+    if (mobileOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [mobileOpen]);
+
+  const handleLinkClick = () => {
     setMobileOpen(false);
-  }, [pathname]);
+  };
 
   return (
     <>
@@ -57,61 +75,61 @@ export default function Navbar() {
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
         className={cn(
-          "fixed inset-x-0 top-0 z-50 transition-all duration-350",
+          "fixed inset-x-0 top-0 z-50 transition-all duration-300",
           scrolled
-            ? "glass border-b border-surface-border/40 shadow-card"
-            : "bg-transparent"
+            ? "glass border-b border-surface-border/40 bg-zinc-950/85 shadow-lg backdrop-blur-md"
+            : "bg-zinc-950/40 backdrop-blur-sm border-b border-transparent"
         )}
       >
         <nav
-          className="mx-auto flex max-w-container items-center justify-between px-4 py-4 sm:px-6 lg:px-8"
+          className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 sm:py-3.5 lg:px-8"
           aria-label="Primary navigation"
         >
           {/* Logo */}
           <Link
             href="/"
-            className="group flex items-center gap-2 font-display text-xl font-bold tracking-tight"
-            aria-label="Home"
+            onClick={() => {
+              setActiveSection("hero");
+              setMobileOpen(false);
+            }}
+            className="group flex items-center gap-2 font-display text-base sm:text-lg font-bold tracking-tight"
+            aria-label="Ahmat Alfatah Homepage"
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-accent/15 ring-1 ring-accent/30 transition-all duration-250 group-hover:bg-accent/25 group-hover:ring-accent/50">
+            <span className="flex h-7 w-7 sm:h-8 sm:w-8 items-center justify-center rounded-lg bg-emerald-500/15 ring-1 ring-emerald-500/30 transition-all duration-250 group-hover:bg-emerald-500/25 group-hover:ring-emerald-500/50">
               <Terminal
-                size={15}
-                className="text-accent-light transition-transform duration-250 group-hover:rotate-6"
+                size={14}
+                className="text-emerald-400 transition-transform duration-250 group-hover:rotate-6 sm:size-4"
                 aria-hidden="true"
               />
             </span>
-            <span className="text-text-primary">
-              dev
-              <span className="gradient-text">.portfolio</span>
+            <span className="text-zinc-100">
+              ahmat<span className="gradient-text">.alfatah</span>
             </span>
           </Link>
 
           {/* Desktop Nav Links */}
-          <ul
-            className="hidden items-center gap-1 md:flex"
-            role="list"
-          >
+          <ul className="hidden items-center gap-1 md:flex" role="list">
             {NAV_ITEMS.map((item) => {
-              const isActive = pathname === item.href;
+              const isActive = activeSection === item.id;
               return (
-                <li key={item.href}>
+                <li key={item.id}>
                   <Link
                     href={item.href}
+                    onClick={() => setActiveSection(item.id)}
                     className={cn(
-                      "relative px-3 py-1.5 text-sm font-medium transition-colors duration-250",
+                      "relative rounded-lg px-3 py-1.5 text-xs lg:text-sm font-medium transition-colors duration-250",
                       isActive
-                        ? "text-text-primary"
-                        : "text-text-secondary hover:text-text-primary"
+                        ? "text-zinc-100"
+                        : "text-zinc-400 hover:text-zinc-100"
                     )}
                   >
-                    {/* Animated active pill */}
                     {isActive && (
                       <motion.span
                         layoutId="nav-active-pill"
-                        className="absolute inset-0 rounded-md bg-surface-overlay"
+                        className="absolute inset-0 rounded-lg bg-zinc-800/90 border border-zinc-700/60 shadow-sm"
                         transition={{
                           type: "spring",
-                          stiffness: 380,
+                          stiffness: 400,
                           damping: 30,
                         }}
                         aria-hidden="true"
@@ -124,14 +142,27 @@ export default function Navbar() {
             })}
           </ul>
 
-          {/* CTA + Mobile Toggle */}
-          <div className="flex items-center gap-3">
+          {/* Actions: Download CV + Hire Me + Mobile Toggle */}
+          <div className="flex items-center gap-2 sm:gap-3">
+            {/* Desktop CV Button */}
+            {/* <motion.a
+              href="/cv-ahmat-alfatah.pdf"
+              download="CV-Ahmat-Alfatah.pdf"
+              whileHover={{ scale: 1.04 }}
+              whileTap={{ scale: 0.97 }}
+              className="hidden lg:inline-flex items-center gap-1.5 rounded-lg border border-emerald-500/40 bg-emerald-950/30 px-3 py-1.5 text-xs font-semibold text-emerald-300 transition-all hover:border-emerald-500 hover:bg-emerald-900/40"
+            >
+              <Download className="h-3.5 w-3.5" />
+              <span>CV</span>
+            </motion.a> */}
+
             {/* Desktop CTA */}
             <motion.a
               href="/#contact"
+              onClick={() => setActiveSection("contact")}
               whileHover={{ scale: 1.04 }}
               whileTap={{ scale: 0.97 }}
-              className="hidden rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-surface-base shadow-glow transition-shadow duration-250 hover:shadow-glow-lg md:block"
+              className="hidden rounded-lg bg-emerald-500 px-3.5 py-1.5 lg:px-4 lg:py-2 text-xs lg:text-sm font-semibold text-zinc-950 shadow-glow transition-all duration-250 hover:bg-emerald-400 hover:shadow-glow-lg md:inline-flex items-center justify-center"
             >
               Hire Me
             </motion.a>
@@ -143,7 +174,7 @@ export default function Navbar() {
               aria-expanded={mobileOpen}
               aria-controls="mobile-nav"
               onClick={() => setMobileOpen((prev) => !prev)}
-              className="flex h-9 w-9 items-center justify-center rounded-lg text-text-secondary transition-colors duration-250 hover:bg-surface-overlay hover:text-text-primary md:hidden"
+              className="flex h-9 w-9 items-center justify-center rounded-lg border border-zinc-800/80 bg-zinc-900/80 text-zinc-300 transition-colors duration-250 hover:bg-zinc-800 hover:text-white md:hidden"
             >
               <AnimatePresence mode="wait" initial={false}>
                 {mobileOpen ? (
@@ -184,7 +215,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm md:hidden"
               onClick={() => setMobileOpen(false)}
               aria-hidden="true"
             />
@@ -198,18 +229,18 @@ export default function Navbar() {
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              className="glass fixed right-0 top-0 z-50 flex h-full w-72 flex-col border-l border-surface-border/50 p-6 md:hidden"
+              transition={{ type: "spring", stiffness: 320, damping: 32 }}
+              className="fixed right-0 top-0 z-50 flex h-full w-[min(19rem,85vw)] flex-col border-l border-zinc-800 bg-zinc-950 p-5 shadow-2xl md:hidden"
             >
               {/* Drawer header */}
-              <div className="mb-8 flex items-center justify-between">
-                <span className="font-display text-lg font-bold gradient-text">
-                  Menu
+              <div className="mb-6 flex items-center justify-between border-b border-zinc-800/80 pb-4">
+                <span className="font-display text-base font-bold text-zinc-100">
+                  Navigation
                 </span>
                 <button
                   type="button"
                   onClick={() => setMobileOpen(false)}
-                  className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary hover:bg-surface-overlay hover:text-text-primary"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg border border-zinc-800 bg-zinc-900 text-zinc-400 hover:text-white"
                   aria-label="Close menu"
                 >
                   <X size={16} aria-hidden="true" />
@@ -217,37 +248,59 @@ export default function Navbar() {
               </div>
 
               {/* Nav links */}
-              <ul className="flex flex-col gap-1" role="list">
-                {NAV_ITEMS.map((item, i) => (
-                  <motion.li
-                    key={item.href}
-                    initial={{ x: 24, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: i * 0.05 + 0.1 }}
-                  >
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "flex w-full rounded-lg px-4 py-3 text-sm font-medium transition-all duration-250",
-                        pathname === item.href
-                          ? "bg-accent/15 text-accent-light ring-1 ring-accent/30"
-                          : "text-text-secondary hover:bg-surface-overlay hover:text-text-primary"
-                      )}
+              <ul className="flex flex-col gap-1.5" role="list">
+                {NAV_ITEMS.map((item, i) => {
+                  const isActive = activeSection === item.id;
+                  return (
+                    <motion.li
+                      key={item.id}
+                      initial={{ x: 20, opacity: 0 }}
+                      animate={{ x: 0, opacity: 1 }}
+                      transition={{ delay: i * 0.04 + 0.05 }}
                     >
-                      {item.label}
-                    </Link>
-                  </motion.li>
-                ))}
+                      <Link
+                        href={item.href}
+                        onClick={handleLinkClick}
+                        className={cn(
+                          "flex w-full items-center justify-between rounded-xl px-4 py-3 text-sm font-medium transition-all duration-200",
+                          isActive
+                            ? "bg-emerald-500/15 text-emerald-400 font-semibold ring-1 ring-emerald-500/30"
+                            : "text-zinc-300 hover:bg-zinc-900 hover:text-white"
+                        )}
+                      >
+                        <span>{item.label}</span>
+                        {isActive && (
+                          <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
+                        )}
+                      </Link>
+                    </motion.li>
+                  );
+                })}
               </ul>
 
-              {/* Mobile CTA */}
-              <div className="mt-auto">
+              {/* Mobile CTA & Download CV */}
+              <div className="mt-auto pt-6 border-t border-zinc-800/80 space-y-2.5">
+                <a
+                  href="/cv-ahmat-alfatah.pdf"
+                  download="CV-Ahmat-Alfatah.pdf"
+                  onClick={handleLinkClick}
+                  className="flex w-full items-center justify-center gap-2 rounded-xl border border-emerald-500/40 bg-emerald-950/30 py-3 text-sm font-semibold text-emerald-300 transition-all hover:bg-emerald-900/40"
+                >
+                  <Download className="h-4 w-4" />
+                  <span>Download CV</span>
+                </a>
+
                 <a
                   href="/#contact"
-                  className="flex w-full items-center justify-center rounded-lg bg-accent py-3 text-sm font-semibold text-surface-base shadow-glow"
+                  onClick={handleLinkClick}
+                  className="flex w-full items-center justify-center rounded-xl bg-emerald-500 py-3 text-sm font-semibold text-zinc-950 shadow-glow transition-all hover:bg-emerald-400"
                 >
                   Hire Me
                 </a>
+
+                <p className="pt-1 text-center text-[11px] text-zinc-500">
+                  Ahmat Alfatah • IT &amp; ERP Solutions
+                </p>
               </div>
             </motion.div>
           </>

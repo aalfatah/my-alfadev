@@ -10,7 +10,7 @@ interface ContainerProps {
   className?: string;
   /** Children content */
   children: ReactNode;
-  /** Apply vertical padding (top + bottom) — defaults to true */
+  /** Apply vertical padding (top + bottom) — defaults to false */
   padded?: boolean;
   /** Horizontal padding variant */
   gutter?: "sm" | "md" | "lg";
@@ -24,13 +24,6 @@ interface ContainerProps {
  * Container — Server Component.
  * Provides consistent max-width, horizontal padding, and optional
  * vertical section spacing across the portfolio.
- *
- * Usage:
- * ```tsx
- * <Container as="section" padded>
- *   <h2>Section Title</h2>
- * </Container>
- * ```
  */
 export default function Container({
   as: Tag = "div",
@@ -41,22 +34,23 @@ export default function Container({
   narrow = false,
 }: ContainerProps) {
   const gutterClasses = {
-    sm: "px-4 sm:px-6",
+    sm: "px-3.5 sm:px-5",
     md: "px-4 sm:px-6 lg:px-8",
-    lg: "px-6 sm:px-8 lg:px-12",
+    lg: "px-5 sm:px-8 lg:px-12",
   };
 
   return (
     <Tag
+      style={{ marginLeft: "auto", marginRight: "auto" }}
       className={cn(
         // Base layout
         "mx-auto w-full",
-        // Max-width
-        narrow ? "max-w-3xl" : "max-w-container",
+        // Max-width (7xl = 80rem / 1280px standard container)
+        narrow ? "max-w-3xl" : "max-w-7xl",
         // Horizontal padding
         gutterClasses[gutter],
         // Vertical padding (for sections)
-        padded && "py-20 sm:py-28 lg:py-32",
+        padded && "py-16 sm:py-24 lg:py-28",
         // Caller overrides
         className
       )}
