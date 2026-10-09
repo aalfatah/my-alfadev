@@ -1,6 +1,6 @@
-# 🚀 Modern Developer & Architect Portfolio
+# 🚀 Ahmat Alfatah — Developer & System Architect Portfolio
 
-An enterprise-grade, high-performance personal portfolio built for **IT Programmers, Odoo Developers, System Architects, and UI/UX Designers**. Engineered to demonstrate the perfect synergy between robust backend architecture and cutting-edge frontend aesthetics.
+An enterprise-grade, high-performance personal portfolio built for **Ahmat Alfatah** — IT Programmer, Odoo ERP Developer, System Architect, and UI/UX Designer. Engineered to demonstrate the perfect synergy between robust enterprise backend systems and cutting-edge frontend aesthetics.
 
 [![Next.js](https://img.shields.io/badge/Next.js-16.4.0-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![React](https://img.shields.io/badge/React-19.3.0-blue?style=for-the-badge&logo=react)](https://react.dev/)
@@ -106,8 +106,8 @@ Ensure you have the following installed:
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/<your-username>/<your-repo-name>.git
-   cd <your-repo-name>
+   git clone https://github.com/aalfatah/my-alfadev.git
+   cd my-alfadev
    ```
 
 2. **Install dependencies:**
