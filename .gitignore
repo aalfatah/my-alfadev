@@ -38,3 +38,8 @@ Thumbs.db
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+AGENTS.md
+.agent/
+.agent.lock/
+.gitignore

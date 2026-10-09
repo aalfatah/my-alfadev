@@ -100,15 +100,6 @@
   color-scheme: dark;
 }
 
-/* ── Hard Reset & Box Model ───────────────────────────────── */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
-
 /* ── Base HTML / Body ─────────────────────────────────────── */
 html {
   scroll-behavior: smooth;
@@ -229,15 +220,11 @@ img, video, canvas, audio, iframe, embed, object {
 }
 .glow-border:hover::after { opacity: 1; }
 
-/* Bento card base */
+/* Bento card base — subtle transition & hover glow without overriding component utility padding */
 .bento-card {
-  background: var(--color-surface-raised);
-  border: 1px solid var(--color-surface-border);
-  border-radius: 1.25rem;
-  padding: 1.5rem;
-  transition: border-color 0.25s ease, box-shadow 0.25s ease;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, transform 0.25s ease;
 }
 .bento-card:hover {
-  border-color: var(--color-accent);
+  border-color: rgba(16, 185, 129, 0.4);
   box-shadow: var(--shadow-glow);
 }
